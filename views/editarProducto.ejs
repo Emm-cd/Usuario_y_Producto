@@ -1,0 +1,20 @@
+<%- include("templates/encabezado") %>
+<h1>Editar Producto </h1>
+    <div>
+        <form action="/editarProducto" method="post" id="formularioproducto">
+            <input type="hidden" value="<%= idproducto %>" name="idproducto">
+            <label for="nombre">Nombre: </label><span class="ocultar errorNombre"></span>
+            <input value="<%= nombre %>" class="" autofocus name="nombre" id="nombre" type="text" placeholder="Nombre"><span></span>
+            
+            <label for="descripcion">Descripcion: </label><span class="ocultar errorDescripcion"></span>
+            <input value="<%= descripcion %>" name="descripcion" id="descripcion" type="text" placeholder="Descripción"><span></span>
+            
+
+            <label for="cantidad">Cantidad: </label><span class="ocultar errorCantidad"></span>
+            <input value="<%= cantidad %>" name="cantidad" id="cantidad" type="text" placeholder="Cantidad"><span></span>
+            
+            <button type="submit">Editar Producto</button>
+        </form>
+    </div>
+
+<%- include("templates/pie") %>
