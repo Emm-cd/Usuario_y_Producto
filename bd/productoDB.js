@@ -6,15 +6,14 @@ class ProductoDB extends ConectarBD {
     }
 
     async nuevoProducto(producto) {
-        const sql = "INSERT INTO productos VALUES(null, '"+producto.nombre+"', '"+producto.descripcion+"', '"+producto.cantidad+"');";
+        const sql = "INSERT INTO productos (nombre, descripcion, cantidad) VALUES (?, ?, ?)";
         try {
             await this.conectarMySQL();
-            await this.conexion.execute(sql);
+            await this.conexion.execute(sql, [producto.nombre, producto.descripcion, producto.cantidad]);
             await this.cerrarConexion();
             console.log("Dato insertado a MySql");
         } catch (error) {
-            console.error("Error al insertar datos en MySql" +error);
-            console.error(sql);
+            console.error("Error al insertar datos en MySql: " + error);
         }
     }
 
@@ -33,46 +32,43 @@ class ProductoDB extends ConectarBD {
         }
     }
     async buscarProductoPorID(idProducto){
-        const sql="SELECT * FROM productos WHERE idproducto="+ idProducto;
+        const sql = "SELECT * FROM productos WHERE idproducto = ?";
         try {
             await this.conectarMySQL();
-            const producto=await this.conexion.execute(sql);
+            const [producto] = await this.conexion.execute(sql, [idProducto]);
             await this.cerrarConexion();
             console.log("Producto registrado correctamente");
             return producto;
-        } catch (error){
-            console.error("Error al recuperar el producto "+ error);
-            console.error(sql);
+        } catch (error) {
+            console.error("Error al recuperar el producto: " + error);
         }
     }
 
     async editarProducto(producto){
-        const sql2=`
-        UPDATE producto SET
-        nombre="${producto.nombre}",
-        descripcion="${producto.celular}",
-        cantidad="${producto.cantidad}"
-        WHERE idproducto="${producto.idproducto}"
+        const sql = `
+        UPDATE productos SET
+        nombre = ?,
+        descripcion = ?,
+        cantidad = ?
+        WHERE idproducto = ?
         `;
         try {
             await this.conectarMySQL();
-            await this.conexion.execute(sql2);
+            await this.conexion.execute(sql, [producto.nombre, producto.descripcion, producto.cantidad, producto.idproducto]);
             await this.cerrarConexion();
         } catch (error) {
-            console.error("Error al editar producto"+error);
-            console.error(sql2);
+            console.error("Error al editar producto: " + error);
         }
     }
 
     async borrarProducto(idproducto){
-        const sql="DELETE FROM productos WHERE idproducto="+idproducto;
+        const sql = "DELETE FROM productos WHERE idproducto = ?";
         try {
             await this.conectarMySQL();
-            await this.conexion.execute(sql);
+            await this.conexion.execute(sql, [idproducto]);
             await this.cerrarConexion();
         } catch (error) {
-            console.error("Error al borrar el producto"+error);
-            console.error(sql);
+            console.error("Error al borrar el producto: " + error);
         }
     }
 }

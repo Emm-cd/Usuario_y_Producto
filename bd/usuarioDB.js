@@ -6,15 +6,14 @@ class UsuarioDB extends ConectarBD {
     }
 
     async nuevoUsuario(usuario) {
-        const sql = "INSERT INTO usuarios VALUES(null, '"+usuario.nombre+"', '"+usuario.celular+"', '"+usuario.correo+"');";
+        const sql = "INSERT INTO usuarios (nombre, celular, correo) VALUES (?, ?, ?)";
         try {
             await this.conectarMySQL();
-            await this.conexion.execute(sql);
+            await this.conexion.execute(sql, [usuario.nombre, usuario.celular, usuario.correo]);
             await this.cerrarConexion();
             console.log("Dato insertado a MySql");
         } catch (error) {
-            console.error("Error al insertar datos en MySql" +error);
-            console.error(sql);
+            console.error("Error al insertar datos en MySql: " + error);
         }
     }
 
@@ -48,32 +47,30 @@ class UsuarioDB extends ConectarBD {
     }
 
     async editarUsuario(usuario){
-        const sql2=`
+        const sql = `
         UPDATE usuarios SET
-        nombre="${usuario.nombre}",
-        celular="${usuario.celular}",
-        correo="${usuario.correo}"
-        WHERE id_usu="${usuario.idusuario}"
+        nombre = ?,
+        celular = ?,
+        correo = ?
+        WHERE idusuario = ?
         `;
         try {
             await this.conectarMySQL();
-            await this.conexion.execute(sql2);
+            await this.conexion.execute(sql, [usuario.nombre, usuario.celular, usuario.correo, usuario.idusuario]);
             await this.cerrarConexion();
         } catch (error) {
-            console.error("Error al editar usuario"+error);
-            console.error(sql2);
+            console.error("Error al editar usuario: " + error);
         }
     }
 
     async borrarUsuario(idusuario){
-        const sql="DELETE FROM usuarios WHERE idusuario="+idusuario;
+        const sql = "DELETE FROM usuarios WHERE idusuario = ?";
         try {
             await this.conectarMySQL();
-            await this.conexion.execute(sql);
+            await this.conexion.execute(sql, [idusuario]);
             await this.cerrarConexion();
         } catch (error) {
-            console.error("Error al borrar el usuario"+error);
-            console.error(sql);
+            console.error("Error al borrar el usuario: " + error);
         }
     }
 }

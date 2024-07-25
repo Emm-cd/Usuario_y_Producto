@@ -25,12 +25,12 @@ ruta.get("/agregarUsuario", (req, res)=>{ // REQ - ENVIAR DATOS, RES RECIBIR DAT
     res.render("formulario");
 });
 
-ruta.post("/agregarUsuario", (req, res)=>{
+ruta.post("/agregarUsuario", async (req, res)=>{
     console.log(req.body);
     const usuario1 = new UsuarioClase (req.body);
     if(usuario1.nombre!=undefined && usuario1.celular!=undefined && usuario1.correo!=undefined){
         const usuariobd = new UsuarioBD();
-        usuariobd.nuevoUsuario(usuario1. obtenerDatos);
+        await usuariobd.nuevoUsuario(usuario1. obtenerDatos);
         res.render("mostrarDatos", usuario1.obtenerDatos);
     } else{
         res.render("error");
@@ -80,40 +80,37 @@ ruta.get("/editarUsuario/:idusuario", async(req, res)=>{
     res.render("formularioproducto");
 });
 
-ruta.post("/agregarProducto", (req, res)=>{
-    console.log(req.body);
-    const producto1 = new ProductoClase (req.body);
-    if(producto1.nombre!=undefined && producto1.descripcion!=undefined && producto1.cantidad!=undefined){
+ruta.post("/agregarProducto", async (req, res)=>{
+    const producto1 = new ProductoClase(req.body);
+    if (producto1.nombre && producto1.descripcion && producto1.cantidad) {
         const productobd = new ProductoBD();
-        productobd.nuevoProducto(producto1. obtenerDatosp);
+        await productobd.nuevoProducto(producto1.obtenerDatosp);
         res.render("mostrarDatosp", producto1.obtenerDatosp);
-    } else{
+    } else {
         res.render("error");
     }
 });
 
 ruta.get("/editarProducto/:idproducto", async(req, res)=>{
     const productobd = new ProductoBD();
-    const [[producto]]=await productobd.buscarProductoPorID(req.params.idproducto);
-    console.log(producto);
-    res.render("editarProducto", producto);
-
+    const [producto] = await productobd.buscarProductoPorID(req.params.idproducto);
+    res.render("editarProducto", { producto }); // Pasar producto como objeto
 });
 
- ruta.post("/editarProducto", async(req, res)=>{
+ruta.post("/editarProducto", async(req, res)=>{
     const productobd = new ProductoBD();
-    const producto1 = new ProductoClase (req.body);
-    if (producto1.nombre!=undefined && producto1.celular!=undefined && producto1.correo!=undefined){
+    const producto1 = new ProductoClase(req.body);
+    if (producto1.nombre && producto1.descripcion && producto1.cantidad) {
         await productobd.editarProducto(req.body);
         res.redirect("/p");
-    } else{
+    } else {
         res.render("error");
     }
- });
+});
 
  ruta.get("/borrarProducto/:idproducto", async(req, res)=>{
     const productobd = new ProductoBD();
-    await productobd.borrarProducto (req.params.idproducto); 
+    await productobd.borrarProducto(req.params.idproducto);
     res.redirect("/p");
  });
 
